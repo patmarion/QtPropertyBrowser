@@ -5,6 +5,8 @@ PROJECT(QtPropertyBrowser)
 
 OPTION(QtPropertyBrowser_BUILD_EXAMPLES "Build examples" OFF)
 
+OPTION(BUILD_SHARED_LIBS "Build shared libraries" ON)
+
 #-----------------------------------------------------------------------------
 # Output directories.
 #
