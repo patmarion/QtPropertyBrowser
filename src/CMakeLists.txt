@@ -94,6 +94,55 @@ add_dependencies(${libname} ${libname}GenerateMoc)
 
 install(FILES
   ${KIT_HEADERS_MOC_SRCS}
+  QtAbstractEditorFactoryBase
+  QtAbstractPropertyBrowser
+  QtAbstractPropertyManager
+  QtBoolPropertyManager
+  QtBrowserItem
+  QtButtonPropertyBrowser
+  QtCharEditorFactory
+  QtCharPropertyManager
+  QtCheckBoxFactory
+  QtColorEditorFactory
+  QtColorPropertyManager
+  QtCursorEditorFactory
+  QtCursorPropertyManager
+  QtDateEditFactory
+  QtDatePropertyManager
+  QtDateTimeEditFactory
+  QtDateTimePropertyManager
+  QtDoublePropertyManager
+  QtDoubleSpinBoxFactory
+  QtEnumEditorFactory
+  QtEnumPropertyManager
+  QtFlagPropertyManager
+  QtFontEditorFactory
+  QtFontPropertyManager
+  QtGroupBoxPropertyBrowser
+  QtGroupPropertyManager
+  QtIntPropertyManager
+  QtKeySequenceEditorFactory
+  QtKeySequencePropertyManager
+  QtLineEditFactory
+  QtLocalePropertyManager
+  QtPointFPropertyManager
+  QtPointPropertyManager
+  QtProperty
+  QtRectFPropertyManager
+  QtRectPropertyManager
+  QtScrollBarFactory
+  QtSizeFPropertyManager
+  QtSizePolicyPropertyManager
+  QtSizePropertyManager
+  QtSliderFactory
+  QtSpinBoxFactory
+  QtStringPropertyManager
+  QtTimeEditFactory
+  QtTimePropertyManager
+  QtTreePropertyBrowser
+  QtVariantEditorFactory
+  QtVariantProperty
+  QtVariantPropertyManager
   DESTINATION include/QtPropertyBrowser)
 
 install(TARGETS
