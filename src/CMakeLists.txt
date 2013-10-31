@@ -91,3 +91,11 @@ add_custom_target(${libname}GenerateMoc
   DEPENDS ${KIT_MOC_CPP}
   )
 add_dependencies(${libname} ${libname}GenerateMoc)
+
+install(FILES
+  ${KIT_HEADERS_MOC_SRCS}
+  DESTINATION include/QtPropertyBrowser)
+
+install(TARGETS
+  ${libname}
+  DESTINATION lib)
