@@ -67,6 +67,10 @@ public:
 
     void setValue(const QVariant &value);
     void setAttribute(const QString &attribute, const QVariant &value);
+
+    void setEditorHint(QString editorHint);
+    QString editorHint() const;
+
 protected:
     QtVariantProperty(QtVariantPropertyManager *manager);
 private:

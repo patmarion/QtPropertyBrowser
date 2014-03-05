@@ -150,6 +150,7 @@ public:
     QtVariantPropertyPrivate(QtVariantPropertyManager *m) : manager(m) {}
 
     QtVariantPropertyManager *manager;
+    QString m_editorHint;
 };
 
 /*!
@@ -304,6 +305,30 @@ void QtVariantProperty::setValue(const QVariant &value)
 void QtVariantProperty::setAttribute(const QString &attribute, const QVariant &value)
 {
     d_ptr->manager->setAttribute(this, attribute, value);
+}
+
+
+/*!
+    Sets this property's editor hint.
+
+    The editor hint is a string used to specify a custom property editor
+    for the QVarientEditorFactory.
+
+    \sa editorHint()
+*/
+void QtVariantProperty::setEditorHint(QString editorHint)
+{
+    d_ptr->m_editorHint = editorHint;
+}
+
+/*!
+    Returns this property's editor hint.
+
+    \sa setEditorHint()
+*/
+QString QtVariantProperty::editorHint() const
+{
+    return d_ptr->m_editorHint;
 }
 
 class QtVariantPropertyManagerPrivate
@@ -1937,6 +1962,7 @@ public:
 
     QMap<QtAbstractEditorFactoryBase *, int> m_factoryToType;
     QMap<int, QtAbstractEditorFactoryBase *> m_typeToFactory;
+    QMap<QString, QtAbstractEditorFactoryBase *> m_hintToFactory;
 };
 
 /*!
@@ -2057,6 +2083,9 @@ QtVariantEditorFactory::QtVariantEditorFactory(QObject *parent)
     const int enumId = QtVariantPropertyManager::enumTypeId();
     d_ptr->m_factoryToType[d_ptr->m_comboBoxFactory] = enumId;
     d_ptr->m_typeToFactory[enumId] = d_ptr->m_comboBoxFactory;
+
+    d_ptr->m_hintToFactory["slider"] = new QtSliderFactory(this);
+    d_ptr->m_hintToFactory["scrollbar"] = new QtScrollBarFactory(this);
 }
 
 /*!
@@ -2075,14 +2104,19 @@ QtVariantEditorFactory::~QtVariantEditorFactory()
 void QtVariantEditorFactory::connectPropertyManager(QtVariantPropertyManager *manager)
 {
     QList<QtIntPropertyManager *> intPropertyManagers = qFindChildren<QtIntPropertyManager *>(manager);
-    QListIterator<QtIntPropertyManager *> itInt(intPropertyManagers);
-    while (itInt.hasNext())
-        d_ptr->m_spinBoxFactory->addPropertyManager(itInt.next());
+    foreach (QtIntPropertyManager* man, intPropertyManagers) {
+        d_ptr->m_spinBoxFactory->addPropertyManager(man);
+        foreach (QtAbstractEditorFactoryBase* fac, d_ptr->m_hintToFactory.values())
+            fac->addConnection(man);
+    }
+
 
     QList<QtDoublePropertyManager *> doublePropertyManagers = qFindChildren<QtDoublePropertyManager *>(manager);
-    QListIterator<QtDoublePropertyManager *> itDouble(doublePropertyManagers);
-    while (itDouble.hasNext())
-        d_ptr->m_doubleSpinBoxFactory->addPropertyManager(itDouble.next());
+    foreach (QtDoublePropertyManager* man, doublePropertyManagers) {
+        d_ptr->m_doubleSpinBoxFactory->addPropertyManager(man);
+        foreach (QtAbstractEditorFactoryBase* fac, d_ptr->m_hintToFactory.values())
+           fac->addConnection(man);
+    }
 
     QList<QtBoolPropertyManager *> boolPropertyManagers = qFindChildren<QtBoolPropertyManager *>(manager);
     QListIterator<QtBoolPropertyManager *> itBool(boolPropertyManagers);
@@ -2196,6 +2230,7 @@ void QtVariantEditorFactory::connectPropertyManager(QtVariantPropertyManager *ma
         d_ptr->m_checkBoxFactory->addPropertyManager(itFlag.next()->subBoolPropertyManager());
 }
 
+#include <cstdio>
 /*!
     \internal
 
@@ -2204,13 +2239,23 @@ void QtVariantEditorFactory::connectPropertyManager(QtVariantPropertyManager *ma
 QWidget *QtVariantEditorFactory::createEditor(QtVariantPropertyManager *manager, QtProperty *property,
         QWidget *parent)
 {
+    printf("here\n");
     if (property->isReadOnly())
         return 0;
 
+    printf("and here...\n");
     const int propType = manager->propertyType(property);
     QtAbstractEditorFactoryBase *factory = d_ptr->m_typeToFactory.value(propType, 0);
     if (!factory)
         return 0;
+
+    if (QtVariantProperty* variantProperty = dynamic_cast<QtVariantProperty*>(property))
+    {
+      printf("got hint: %s\n", qPrintable(variantProperty->editorHint()));
+      QtAbstractEditorFactoryBase *hintFactory = d_ptr->m_hintToFactory.value(variantProperty->editorHint());
+      factory = hintFactory ? hintFactory : factory;
+    }
+
     return factory->createEditor(wrappedProperty(property), parent);
 }
 
@@ -2233,14 +2278,19 @@ QWidget *QtVariantEditorFactory::createEditor(QtProperty *property, QWidget *par
 void QtVariantEditorFactory::disconnectPropertyManager(QtVariantPropertyManager *manager)
 {
     QList<QtIntPropertyManager *> intPropertyManagers = qFindChildren<QtIntPropertyManager *>(manager);
-    QListIterator<QtIntPropertyManager *> itInt(intPropertyManagers);
-    while (itInt.hasNext())
-        d_ptr->m_spinBoxFactory->removePropertyManager(itInt.next());
+    foreach (QtIntPropertyManager* man, intPropertyManagers) {
+        d_ptr->m_spinBoxFactory->removePropertyManager(man);
+        foreach (QtAbstractEditorFactoryBase* fac, d_ptr->m_hintToFactory.values())
+            fac->breakConnection(man);
+    }
+
 
     QList<QtDoublePropertyManager *> doublePropertyManagers = qFindChildren<QtDoublePropertyManager *>(manager);
-    QListIterator<QtDoublePropertyManager *> itDouble(doublePropertyManagers);
-    while (itDouble.hasNext())
-        d_ptr->m_doubleSpinBoxFactory->removePropertyManager(itDouble.next());
+    foreach (QtDoublePropertyManager* man, doublePropertyManagers) {
+        d_ptr->m_doubleSpinBoxFactory->removePropertyManager(man);
+        foreach (QtAbstractEditorFactoryBase* fac, d_ptr->m_hintToFactory.values())
+            fac->breakConnection(man);
+    }
 
     QList<QtBoolPropertyManager *> boolPropertyManagers = qFindChildren<QtBoolPropertyManager *>(manager);
     QListIterator<QtBoolPropertyManager *> itBool(boolPropertyManagers);

@@ -154,11 +154,14 @@ class QT_QTPROPERTYBROWSER_EXPORT QtAbstractEditorFactoryBase : public QObject
     Q_OBJECT
 public:
     virtual QWidget *createEditor(QtProperty *property, QWidget *parent) = 0;
+
+    virtual void breakConnection(QtAbstractPropertyManager *manager) = 0;
+    virtual void addConnection(QtAbstractPropertyManager *manager) = 0;
+
 protected:
     explicit QtAbstractEditorFactoryBase(QObject *parent = 0)
         : QObject(parent) {}
 
-    virtual void breakConnection(QtAbstractPropertyManager *manager) = 0;
 protected Q_SLOTS:
     virtual void managerDestroyed(QObject *manager) = 0;
 
@@ -243,6 +246,14 @@ private:
             }
         }
     }
+
+    void addConnection(QtAbstractPropertyManager *manager)
+    {
+      PropertyManager* man = qobject_cast<PropertyManager*>(manager);
+      if (man)
+        addPropertyManager(man);
+    }
+
 private:
     QSet<PropertyManager *> m_managers;
     friend class QtAbstractPropertyEditor;
