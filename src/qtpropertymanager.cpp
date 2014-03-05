@@ -6211,6 +6211,7 @@ void QtColorPropertyManager::initializeProperty(QtProperty *property)
     QColor val;
     d_ptr->m_values[property] = val;
 
+    /*
     QtProperty *rProp = d_ptr->m_intPropertyManager->addProperty();
     rProp->setPropertyName(tr("Red"));
     d_ptr->m_intPropertyManager->setValue(rProp, val.red());
@@ -6242,6 +6243,7 @@ void QtColorPropertyManager::initializeProperty(QtProperty *property)
     d_ptr->m_propertyToA[property] = aProp;
     d_ptr->m_aToProperty[aProp] = property;
     property->addSubProperty(aProp);
+    */
 }
 
 /*!

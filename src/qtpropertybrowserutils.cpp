@@ -175,11 +175,17 @@ QIcon QtPropertyBrowserUtils::brushValueIcon(const QBrush &b)
 
 QString QtPropertyBrowserUtils::colorValueText(const QColor &c)
 {
+    /*
     return QApplication::translate("QtPropertyBrowserUtils", "[%1, %2, %3] (%4)", 0, QApplication::UnicodeUTF8)
                                   .arg(QString::number(c.red()))
                                   .arg(QString::number(c.green()))
                                   .arg(QString::number(c.blue()))
                                   .arg(QString::number(c.alpha()));
+    */
+    return QApplication::translate("QtPropertyBrowserUtils", "[%1, %2, %3]", 0, QApplication::UnicodeUTF8)
+                                  .arg(QString::number(c.red()))
+                                  .arg(QString::number(c.green()))
+                                  .arg(QString::number(c.blue()));
 }
 
 QPixmap QtPropertyBrowserUtils::fontValuePixmap(const QFont &font)
