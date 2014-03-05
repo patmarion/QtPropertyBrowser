@@ -84,6 +84,7 @@ public:
     QString propertyId() const;
     bool isEnabled() const;
     bool isModified() const;
+    bool isReadOnly() const;
 
     bool hasValue() const;
     QIcon valueIcon() const;
@@ -98,6 +99,7 @@ public:
     void setPropertyId(const QString &text);
     void setEnabled(bool enable);
     void setModified(bool modified);
+    void setReadOnly(bool readOnly);
 
     bool isSubProperty()const;
     void addSubProperty(QtProperty *property);

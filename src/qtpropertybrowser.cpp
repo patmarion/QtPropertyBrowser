@@ -54,7 +54,7 @@ QT_BEGIN_NAMESPACE
 class QtPropertyPrivate
 {
 public:
-    QtPropertyPrivate(QtAbstractPropertyManager *manager) : m_enabled(true), m_modified(false), m_manager(manager) {}
+    QtPropertyPrivate(QtAbstractPropertyManager *manager) : m_enabled(true), m_modified(false), m_readOnly(false), m_manager(manager) {}
     QtProperty *q_ptr;
 
     QSet<QtProperty *> m_parentItems;
@@ -67,6 +67,7 @@ public:
     QString m_id;
     bool m_enabled;
     bool m_modified;
+    bool m_readOnly;
 
     QtAbstractPropertyManager * const m_manager;
 };
@@ -271,6 +272,16 @@ bool QtProperty::isModified() const
 }
 
 /*!
+    Returns whether the property is read-only.
+
+    \sa setReadOnly()
+*/
+bool QtProperty::isReadOnly() const
+{
+    return d_ptr->m_readOnly;
+}
+
+/*!
     Returns whether the property has a value.
 
     \sa QtAbstractPropertyManager::hasValue()
@@ -420,6 +431,20 @@ void QtProperty::setModified(bool modified)
         return;
 
     d_ptr->m_modified = modified;
+    propertyChanged();
+}
+
+/*!
+    Sets the property's read-only state according to the passed \a modified value.
+
+    \sa isReadOnly()
+*/
+void QtProperty::setReadOnly(bool readOnly)
+{
+    if (d_ptr->m_readOnly == readOnly)
+        return;
+
+    d_ptr->m_readOnly = readOnly;
     propertyChanged();
 }
 

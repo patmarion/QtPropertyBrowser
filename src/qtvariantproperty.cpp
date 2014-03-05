@@ -2204,6 +2204,9 @@ void QtVariantEditorFactory::connectPropertyManager(QtVariantPropertyManager *ma
 QWidget *QtVariantEditorFactory::createEditor(QtVariantPropertyManager *manager, QtProperty *property,
         QWidget *parent)
 {
+    if (property->isReadOnly())
+        return 0;
+
     const int propType = manager->propertyType(property);
     QtAbstractEditorFactoryBase *factory = d_ptr->m_typeToFactory.value(propType, 0);
     if (!factory)
