@@ -49,6 +49,14 @@ QT_BEGIN_NAMESPACE
 #endif
 
 #if defined(Q_WS_WIN)
+#  if defined(QtPropertyBrowser_EXPORTS)
+#    define QT_QTPROPERTYBROWSER_EXPORT
+#  else
+#    define QT_QTPROPERTYBROWSER_IMPORT
+#  endif
+#endif
+
+#if defined(Q_WS_WIN)
 #  if !defined(QT_QTPROPERTYBROWSER_EXPORT) && !defined(QT_QTPROPERTYBROWSER_IMPORT)
 #    define QT_QTPROPERTYBROWSER_EXPORT
 #  elif defined(QT_QTPROPERTYBROWSER_IMPORT)
