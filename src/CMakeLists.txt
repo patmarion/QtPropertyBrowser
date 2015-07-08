@@ -147,6 +147,7 @@ install(FILES
   QtVariantPropertyManager
   DESTINATION include/QtPropertyBrowser)
 
-install(TARGETS
-  ${libname}
-  DESTINATION lib)
+install(TARGETS ${libname}
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
