@@ -48,17 +48,11 @@
 QT_BEGIN_NAMESPACE
 #endif
 
-#if defined(Q_WS_WIN)
-#  if !defined(QT_QTPROPERTYBROWSER_EXPORT) && !defined(QT_QTPROPERTYBROWSER_IMPORT)
-#    define QT_QTPROPERTYBROWSER_EXPORT
-#  elif defined(QT_QTPROPERTYBROWSER_IMPORT)
-#    if defined(QT_QTPROPERTYBROWSER_EXPORT)
-#      undef QT_QTPROPERTYBROWSER_EXPORT
-#    endif
-#    define QT_QTPROPERTYBROWSER_EXPORT __declspec(dllimport)
-#  elif defined(QT_QTPROPERTYBROWSER_EXPORT)
-#    undef QT_QTPROPERTYBROWSER_EXPORT
+#if defined(Q_OS_WIN)
+#  if defined(QtPropertyBrowser_EXPORTS) // This variable is defined by CMake
 #    define QT_QTPROPERTYBROWSER_EXPORT __declspec(dllexport)
+#  else
+#    define QT_QTPROPERTYBROWSER_EXPORT __declspec(dllimport)
 #  endif
 #else
 #  define QT_QTPROPERTYBROWSER_EXPORT
